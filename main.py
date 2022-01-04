@@ -68,7 +68,7 @@ def get_all_cafe():
 def get_cafe_by_location():
 
     query_location = request.args.get("loc") # Variable aims to the argument passed to URL
-    cafes = db.session.query(Cafe).filter_by(location=query_location)
+    cafes = db.session.query(Cafe).filter_by(location=query_location) 
     cafes_list = []
 
     if cafes:
@@ -77,9 +77,29 @@ def get_cafe_by_location():
                             "has_wifi": cafe.has_wifi, "has_socket": cafe.has_sockets, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
             cafes_list.append(cafes_dict)
     else:
-        return jsonify(error="Not Found:" "Sorry, we dont' have a cafe at that location.")
+        return jsonify(error={"Not Found": "Sorry, we dont' have a cafe at that location."})
     
     return jsonify(cafe=cafes_list)
+
+@app.route("/add", methods=['POST'])
+def add_new_cafe():
+    new_cafe = Cafe(
+        name=request.form.get("name"),
+        map_url=request.form.get("map_url"),
+        img_url=request.form.get("img_url"),
+        location=request.form.get("loc"),
+        has_sockets=request.form.get("sockets"),
+        has_toilet=request.form.get("toilet"),
+        has_wifi=request.form.get("wifi"),
+        can_take_calls=request.form.get("calls"),
+        seats=request.form.get("seats"),
+        coffee_price=request.form.get("coffee_price"),
+    )
+
+    db.session.add(new_cafe)
+    db.session.commit() # .commit() is used when wants the information stays in database, we writing to the database and wants the information to persists
+
+    return jsonify(response={"Success": "New cafe added."})
 
 ## HTTP GET - Read Record
 
