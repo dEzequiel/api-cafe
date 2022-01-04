@@ -2,6 +2,8 @@ from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 import random
 
+from sqlalchemy.sql import selectable
+
 app = Flask(__name__)
 
 ##Connect to Database
@@ -62,7 +64,22 @@ def get_all_cafe():
 
     return jsonify(cafes=cafes_list)
 
+@app.route("/search")
+def get_cafe_by_location():
 
+    query_location = request.args.get("loc") # Variable aims to the argument passed to URL
+    cafes = db.session.query(Cafe).filter_by(location=query_location)
+    cafes_list = []
+
+    if cafes:
+         for cafe in cafes:
+            cafes_dict = {"id": cafe.id, "name": cafe.name, "map_url": cafe.map_url, "img_url": cafe.img_url, "location": cafe.location, "seats": cafe.seats, "has_toilet":cafe.has_toilet,
+                            "has_wifi": cafe.has_wifi, "has_socket": cafe.has_sockets, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
+            cafes_list.append(cafes_dict)
+    else:
+        return jsonify(error="Not Found:" "Sorry, we dont' have a cafe at that location.")
+    
+    return jsonify(cafe=cafes_list)
 
 ## HTTP GET - Read Record
 
