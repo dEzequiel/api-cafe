@@ -49,6 +49,18 @@ def get_random_cafe():  # Return a random Cafe when make a GUET request to '/ran
         "coffee_price": random_cafe.coffee_price,
     })
 
+@app.route("/all")
+def get_all_cafe():
+
+    cafes_list = []
+    cafes = db.session.query(Cafe).all() # All objects in a list
+    
+    for cafe in cafes:
+        cafes_dict = {"id": cafe.id, "name": cafe.name, "map_url": cafe.map_url, "img_url": cafe.img_url, "location": cafe.location, "seats": cafe.seats, "has_toilet":cafe.has_toilet,
+                        "has_wifi": cafe.has_wifi, "has_socket": cafe.has_sockets, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
+        cafes_list.append(cafes_dict)
+
+    return jsonify(cafes=cafes_list)
 
 
 
