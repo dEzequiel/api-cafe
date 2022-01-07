@@ -40,13 +40,8 @@ def get_random_cafe():  # Return a random Cafe when make a GUET request to '/ran
     return jsonify(cafe={
         "id": random_cafe.id,
         "name": random_cafe.name,
-        "map_url": random_cafe.map_url,
-        "img_url": random_cafe.img_url,
         "location": random_cafe.location,
-        "seats": random_cafe.seats,
-        "has_toilet": random_cafe.has_toilet,
         "has_wifi": random_cafe.has_wifi,
-        "has_sockets": random_cafe.has_sockets,
         "can_take_calls": random_cafe.can_take_calls,
         "coffee_price": random_cafe.coffee_price,
     })
@@ -58,8 +53,7 @@ def get_all_cafe():
     cafes = db.session.query(Cafe).all() # All objects in a list
     
     for cafe in cafes:
-        cafes_dict = {"id": cafe.id, "name": cafe.name, "map_url": cafe.map_url, "img_url": cafe.img_url, "location": cafe.location, "seats": cafe.seats, "has_toilet":cafe.has_toilet,
-                        "has_wifi": cafe.has_wifi, "has_socket": cafe.has_sockets, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
+        cafes_dict = {"id": cafe.id, "name": cafe.name, "location": cafe.location, "has_wifi": cafe.has_wifi, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
         cafes_list.append(cafes_dict)
 
     return jsonify(cafes=cafes_list)
@@ -73,26 +67,20 @@ def get_cafe_by_location():
 
     if cafes:
          for cafe in cafes:
-            cafes_dict = {"id": cafe.id, "name": cafe.name, "map_url": cafe.map_url, "img_url": cafe.img_url, "location": cafe.location, "seats": cafe.seats, "has_toilet":cafe.has_toilet,
-                            "has_wifi": cafe.has_wifi, "has_socket": cafe.has_sockets, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
+            cafes_dict = {"id": cafe.id, "name": cafe.name, "location": cafe.location, "has_wifi": cafe.has_wifi, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
             cafes_list.append(cafes_dict)
     else:
         return jsonify(error={"Not Found": "Sorry, we dont' have a cafe at that location."})
     
     return jsonify(cafe=cafes_list)
 
-@app.route("/add", methods=['POST'])
+@app.route("/add", methods=['POST']) #Default GET method is enabled
 def add_new_cafe():
     new_cafe = Cafe(
         name=request.form.get("name"),
-        map_url=request.form.get("map_url"),
-        img_url=request.form.get("img_url"),
         location=request.form.get("loc"),
-        has_sockets=request.form.get("sockets"),
-        has_toilet=request.form.get("toilet"),
         has_wifi=request.form.get("wifi"),
         can_take_calls=request.form.get("calls"),
-        seats=request.form.get("seats"),
         coffee_price=request.form.get("coffee_price"),
     )
 
