@@ -1,18 +1,11 @@
 import random
 import sqlite3
+import json
 
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
-##Connect to Database
-try:
-    db_connection = sqlite3.connect("cafes.db")
-except:
-    print('Connection failed')
-
-db_cursor = db_connection.cursor()
 
 
 class Cafe():
@@ -42,10 +35,25 @@ def home(): # what's going to happen when make a GET request to the route
     return render_template("index.html")
 
 
-# @app.route("/random")    
-# def get_random_cafe():  # Return a random Cafe when make a GUET request to '/random' route
-#     cafes = db.session.query(Cafe).all() # List of objects made by query. 'Query.one() in case of want only one object'
-#     random_cafe = random.choice(cafes)  # Instance of the sub-object selected    
+@app.route("/random")    
+def get_random_cafe():  # Return a random Cafe when make a GUET request to '/random' route
+    with sqlite3.connect("cafes.db") as db_connection:
+        
+        db_connection = sqlite3.connect("cafes.db")
+        db_connection.row_factory = sqlite3.Row
+
+        sql_instruction = '''SELECT name, img_url, map_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price FROM cafe ORDER BY RANDOM() LIMIT 1'''
+
+        record = db_connection.execute(sql_instruction).fetchall()
+        
+        random_cafe = {}
+
+        for row in record:
+            random_cafe.update(dict(row))
+        db_connection.close()
+
+        return random_cafe
+
 
 #     return jsonify(cafe={
 #         "id": random_cafe.id,
@@ -112,5 +120,5 @@ def home(): # what's going to happen when make a GET request to the route
 # ## HTTP DELETE - Delete Record
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
