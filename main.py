@@ -1,21 +1,38 @@
-from flask import Flask, jsonify, render_template, request
-from flask_sqlalchemy import SQLAlchemy
 import random
 import sqlite3
+
+from flask import Flask, jsonify, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 ##Connect to Database
-db_connection = sqlite3.connect("cafes.db")
+try:
+    db_connection = sqlite3.connect("cafes.db")
+except:
+    print('Connection failed')
+
 db_cursor = db_connection.cursor()
 
+# class Cafe():
+#     def __init__(self, nombre, apellido, edad):
+#         self.nombre = nombre
+#         self.apellido = apellido
+#         self.edad = edad
 
+# persona1 = Cafe('Ezeee', 'Dlr', 19)
+# insert = f"""INSERT INTO pruebas (nombre, apellido, edad)
+#                 VALUES (
+#                         '{persona1.nombre}', '{persona1.apellido}', '{persona1.edad}')"""
 
-# ##Cafe TABLE Configuration
-# class Cafe(db.Model):
+# db_cursor.execute(insert)
+# db_connection.commit()
+
+# class Cafe()
+# # ##Cafe TABLE Configuration
+# # class Cafe(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
 #     name = db.Column(db.String(250), unique=True, nullable=False)
-#     map_url = db.Column(db.String(500), nullable=False)
 #     img_url = db.Column(db.String(500), nullable=False)
 #     location = db.Column(db.String(250), nullable=False)
 #     seats = db.Column(db.String(250), nullable=False)
@@ -24,6 +41,27 @@ db_cursor = db_connection.cursor()
 #     has_sockets = db.Column(db.Boolean, nullable=False)
 #     can_take_calls = db.Column(db.Boolean, nullable=False)
 #     coffee_price = db.Column(db.String(250), nullable=True)
+
+class Cafe():
+    def __init__(self, name, img_url, map_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price):
+        self.name = name
+        self.map_url = map_url
+        self.img_url = img_url
+        self.location = location
+        self.seats = seats
+        self.has_toilet = has_toilet
+        self.has_wifi = has_wifi
+        self.has_sockets = has_sockets
+        self.can_take_calls = can_take_calls
+        self.coffee_price = coffee_price
+    
+prueba = Cafe('prueba', 'prueba', 'prueba', 'prueba', 2, True, True, True, True, '2')
+x = f'''INSERT INTO cafe (name, map_url, img_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price) VALUES (
+        '{prueba.name}', '{prueba.map_url}', '{prueba.img_url}', '{prueba.location}', '{prueba.seats}', '{prueba.has_toilet}', '{prueba.has_wifi}', '{prueba.has_sockets}', '{prueba.can_take_calls}', '{prueba.coffee_price}'
+)'''
+
+db_cursor.execute(x)
+db_connection.commit()
 
 #     def to_dict(self):
 #         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
