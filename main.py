@@ -38,8 +38,7 @@ def home(): # what's going to happen when make a GET request to the route
 @app.route("/random")    
 def get_random_cafe():  # Return a random Cafe when make a GUET request to '/random' route
     with sqlite3.connect("cafes.db") as db_connection:
-        
-        db_connection = sqlite3.connect("cafes.db")
+
         db_connection.row_factory = sqlite3.Row
 
         sql_instruction = '''SELECT name, img_url, map_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price FROM cafe ORDER BY RANDOM() LIMIT 1'''
@@ -47,35 +46,32 @@ def get_random_cafe():  # Return a random Cafe when make a GUET request to '/ran
         record = db_connection.execute(sql_instruction).fetchall()
         
         random_cafe = {}
-
         for row in record:
             random_cafe.update(dict(row))
+
         db_connection.close()
 
         return random_cafe
 
+@app.route("/all")
+def get_all_cafe():
+    with sqlite3.connect("cafes.db") as db_connection:
 
-#     return jsonify(cafe={
-#         "id": random_cafe.id,
-#         "name": random_cafe.name,
-#         "location": random_cafe.location,
-#         "has_wifi": random_cafe.has_wifi,
-#         "can_take_calls": random_cafe.can_take_calls,
-#         "coffee_price": random_cafe.coffee_price,
-#     })
+        db_connection.row_factory = sqlite3.Row
+        db_cursor = db_connection.cursor()
 
-# @app.route("/all")
-# def get_all_cafe():
+        sql_instruction = '''SELECT * FROM cafe'''
+        db_cursor.execute(sql_instruction)
 
-#     cafes_list = []
-#     cafes = db.session.query(Cafe).all() # All objects in a list
+        all_cafes = {}
+
+        position = 0
+        for row in db_cursor.fetchall():
+            all_cafes[position] = dict(row)
+            position += 1
+
+        return all_cafes
     
-#     for cafe in cafes:
-#         cafes_dict = {"id": cafe.id, "name": cafe.name, "location": cafe.location, "has_wifi": cafe.has_wifi, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
-#         cafes_list.append(cafes_dict)
-
-#     return jsonify(cafes=cafes_list)
-
 # @app.route("/search")
 # def get_cafe_by_location():
 
