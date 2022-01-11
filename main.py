@@ -50,7 +50,6 @@ def get_random_cafe():  # Return a random Cafe when make a GUET request to '/ran
         for row in record:
             random_cafe.update(dict(row))
 
-        db_connection.close()
 
         return random_cafe
 
