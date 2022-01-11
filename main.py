@@ -1,11 +1,6 @@
-from os import error
-import random
-import re
 import sqlite3
-import json
+from flask import Flask, render_template, request
 
-from flask import Flask, jsonify, render_template, request
-from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -38,7 +33,7 @@ class Cafe:
 
 @app.route("/")  # create a route
 def home():  # what's going to happen when make a GET request to the route
-    return render_template("index.html")
+    return render_template('index.html')
 
 
 @app.route("/random")
