@@ -54,7 +54,7 @@ def get_all_cafe():
         db_connection.row_factory = sqlite3.Row
         db_cursor = db_connection.cursor()
 
-        sql_instruction = '''SELECT * FROM cafe'''
+        sql_instruction = '''SELECT id, name, img_url, map_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price FROM cafe'''
         db_cursor.execute(sql_instruction)
 
         all_cafes = {}
@@ -110,12 +110,23 @@ def add_new_cafe():
         response = {"Success": "New cafe added."}
         return response
 
+@app.route('/update-price/<int:id>', methods=['PATCH'])
+def update_price(id):
 
-# ## HTTP GET - Read Record
+    response = {"Success": "Sucessfully update the price."}
+    not_found_response = {"Not Found": "A cafe with that id was not found."}
 
-# ## HTTP POST - Create Record
+    with sqlite3.connect("cafes.db") as db_connection:
 
-# ## HTTP PUT/PATCH - Update Record
+        new_price = request.args.get('new_price')
+
+        sql_query = db_connection.execute("UPDATE cafe SET coffee_price=? WHERE id=?", (new_price, id))
+        
+        if sql_query:
+            db_connection.commit()
+            return response
+        else:
+            return not_found_response
 
 # ## HTTP DELETE - Delete Record
 
