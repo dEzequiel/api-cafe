@@ -1,5 +1,6 @@
 from os import error
 import random
+import re
 import sqlite3
 import json
 
@@ -128,8 +129,22 @@ def update_price(id):
         else:
             return not_found_response
 
-# ## HTTP DELETE - Delete Record
+@app.route('/record_delete/<cafe_id>', methods=['DELETE'])
+def delete_cafe(cafe_id):
+    with sqlite3.connect("cafes.db") as db_connection:
 
+        api_key = request.args.get("api_key")
+        
+        if api_key == "TopSecretAPIKey":
+            if db_connection.execute("DELETE FROM cafe WHERE id=?", (cafe_id)): 
+                db_connection.commit()
+                return {"Success": "Sucessfully cafe deleted."}, 200
+            else:
+                return {"Not Found": "Sorry a cafe with that id was not found in the database."}, 404
+        else:
+            return {"Forbidden": "Sorry, that's not allowed. Make sure you have the correct api_key."}, 403
+
+        
 
 if __name__ == '__main__':
     app.run(debug=True)
