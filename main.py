@@ -1,3 +1,4 @@
+from os import error
 import random
 import sqlite3
 import json
@@ -20,14 +21,7 @@ class Cafe():
         self.has_sockets = has_sockets
         self.can_take_calls = can_take_calls
         self.coffee_price = coffee_price
-    
-# prueba = Cafe('prueba', 'prueba', 'prueba', 'prueba', 2, True, True, True, True, '2')
-# x = f'''INSERT INTO cafe (name, map_url, img_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price) VALUES (
-#         '{prueba.name}', '{prueba.map_url}', '{prueba.img_url}', '{prueba.location}', '{prueba.seats}', '{prueba.has_toilet}', '{prueba.has_wifi}', '{prueba.has_sockets}', '{prueba.can_take_calls}', '{prueba.coffee_price}'
-# )'''
 
-# db_cursor.execute(x)
-# db_connection.commit()
 
 
 @app.route("/") # create a route
@@ -72,21 +66,26 @@ def get_all_cafe():
 
         return all_cafes
     
-# @app.route("/search")
-# def get_cafe_by_location():
+@app.route("/search")
+def get_cafe_by_location():
+    with sqlite3.connect("cafes.db") as db_connection:
+        
+        db_connection.row_factory = sqlite3.Row
 
-#     query_location = request.args.get("loc") # Variable aims to the argument passed to URL. search?loc=argument
-#     cafes = db.session.query(Cafe).filter_by(location=query_location) 
-#     cafes_list = []
+        parameter_location = request.args.get('location') # Variable aims to the argument passed to URL. search?loc=argument
+        formatted_parameter = "'" + parameter_location + "'"
+        sql_instruction = f'''SELECT * FROM cafe WHERE location={formatted_parameter};'''.format(formatted_parameter)
+        
+        db_cursor = db_connection.cursor()
+        record = db_cursor.execute(sql_instruction)
 
-#     if cafes:
-#          for cafe in cafes:
-#             cafes_dict = {"id": cafe.id, "name": cafe.name, "location": cafe.location, "has_wifi": cafe.has_wifi, "can_take_call": cafe.can_take_calls, "coffe_price": cafe.coffee_price}
-#             cafes_list.append(cafes_dict)
-#     else:
-#         return jsonify(error={"Not Found": "Sorry, we dont' have a cafe at that location."})
-    
-#     return jsonify(cafe=cafes_list)
+        all_cafes = {}
+        position = 0
+        for row in db_cursor.fetchall():
+            all_cafes[position] = dict(row)
+            position += 1
+
+        return all_cafes
 
 # @app.route("/add", methods=['POST']) #Default GET method is enabled
 # def add_new_cafe():
