@@ -87,24 +87,29 @@ def get_cafe_by_location():
 
         return all_cafes
 
-# @app.route("/add", methods=['POST']) #Default GET method is enabled
-# def add_new_cafe():
-#     name=request.form.get("name")
-#     map_url=request.form.get("map_url")
-#     img_url=request.form.get("img_url")
-#     location=request.form.get("loc")
-#     has_sockets=bool(request.form.get("sockets"))
-#     has_toilet=bool(request.form.get("toilet"))
-#     has_wifi=bool(request.form.get("wifi"))
-#     can_take_calls=bool(request.form.get("calls"))
-#     seats=request.form.get("seats")
-#     coffee_price=request.form.get("coffee_price")
+@app.route("/add", methods=['POST']) #Default GET method is enabled
+def add_new_cafe():
+    with sqlite3.connect("cafes.db") as db_connection:
 
-#     new_cafe = Cafe(name, map_url, img_url, location, has_sockets, has_toilet, has_wifi, can_take_calls, seats, coffee_price)
+        name = request.form['name']
+        map_url = request.form['map_url']
+        img_url = request.form['img_url']
+        location = request.form['location']
+        seats = request.form['seats']
+        has_toilet = bool(request.form['has_toilet'])
+        has_wifi = bool(request.form['has_wifi'])
+        has_sockets = bool(request.form['has_sockets'])
+        can_take_calls = bool(request.form['can_take_calls'])
+        coffee_price = request.form['coffee_price']
 
-#     db.session.add(new_cafe)
-#     db.session.commit() # .commit() is used when wants the information stays in database, we writing to the database and wants the information to persists
-#     return jsonify(response={"Success": "New cafe added."})
+        new_cafe = Cafe(name, map_url, img_url, location, has_sockets, has_toilet, has_wifi, can_take_calls, seats, coffee_price)
+
+
+        db_connection.execute("INSERT INTO cafe (name, img_url, map_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (new_cafe.name, new_cafe.img_url, new_cafe.map_url, new_cafe.location, new_cafe.seats, new_cafe.has_toilet, new_cafe.has_wifi, new_cafe.has_sockets, new_cafe.can_take_calls, new_cafe.coffee_price))
+        
+        response = {"Success": "New cafe added."}
+        return response
+
 
 # ## HTTP GET - Read Record
 
