@@ -15,7 +15,7 @@ class APICafeTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content_type, "application/json")
-        self.assertIsInstance(get_random_cafe(), dict)
+        self.assertTrue(b'id' in response.data)
     
 
 if __name__ == '__main__':
