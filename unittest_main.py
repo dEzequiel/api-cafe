@@ -25,7 +25,13 @@ class APICafeTest(unittest.TestCase):
         self.assertEqual(response.content_type, "application/json")
         self.assertTrue(b'id' in response.data)
 
-   
+    def test_get_cafe_by_location(self):
+        tester = app.test_client(self)
+        response = tester.get('/search?location=Shoreditch')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.content_type, "application/json")
+        self.assertTrue(b'id' in response.data)
 
 if __name__ == '__main__':
     unittest.main()
