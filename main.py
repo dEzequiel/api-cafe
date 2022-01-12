@@ -42,14 +42,11 @@ def get_random_cafe():  # Return a random Cafe when make a GUET request to '/ran
 
         db_connection.row_factory = sqlite3.Row
 
-        sql_instruction = """SELECT name, img_url, map_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price FROM cafe ORDER BY RANDOM() LIMIT 1"""
-
-        record = db_connection.execute(sql_instruction).fetchall()
+        record = db_connection.execute("SELECT * FROM cafe ORDER BY RANDOM() LIMIT 1").fetchall()
 
         random_cafe = {}
         for row in record:
-            random_cafe.update(dict(row))
-
+            random_cafe = dict(row)
 
         return random_cafe
 
