@@ -8,9 +8,9 @@ app.testing = True
 client = app.test_client()
 
 
-@app.route("/")  
-def home():  
-    return render_template('index.html')
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 
 @app.route("/random")
@@ -19,7 +19,9 @@ def get_random_cafe():
 
         db_connection.row_factory = sqlite3.Row
 
-        record = db_connection.execute("SELECT * FROM cafe ORDER BY RANDOM() LIMIT 1").fetchall()
+        record = db_connection.execute(
+            "SELECT * FROM cafe ORDER BY RANDOM() LIMIT 1"
+        ).fetchall()
 
         random_cafe = {}
         for row in record:
@@ -54,12 +56,14 @@ def get_cafe_by_location():
         db_connection.row_factory = sqlite3.Row
         db_cursor = db_connection.cursor()
 
-        parameter_location = request.args.get(
-            "location"
-        ) 
+        parameter_location = request.args.get("location")
         formatted_parameter = "'" + parameter_location + "'"
 
-        db_cursor.execute(f"SELECT * FROM cafe WHERE location={formatted_parameter}".format(formatted_parameter))
+        db_cursor.execute(
+            f"SELECT * FROM cafe WHERE location={formatted_parameter}".format(
+                formatted_parameter
+            )
+        )
 
         all_cafes = {}
         key = 0
