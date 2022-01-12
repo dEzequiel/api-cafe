@@ -60,15 +60,14 @@ def get_all_cafe():
         db_connection.row_factory = sqlite3.Row
         db_cursor = db_connection.cursor()
 
-        sql_instruction = """SELECT id, name, img_url, map_url, location, seats, has_toilet, has_wifi, has_sockets, can_take_calls, coffee_price FROM cafe"""
-        db_cursor.execute(sql_instruction)
+        db_cursor.execute("SELECT * FROM cafe")
 
         all_cafes = {}
 
-        position = 0
+        key = 0
         for row in db_cursor.fetchall():
-            all_cafes[position] = dict(row)
-            position += 1
+            all_cafes[key] = dict(row)
+            key += 1
 
         return all_cafes
 
