@@ -9,6 +9,13 @@ class APICafeTest(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
     
+    def test_get_random_cafe(self):
+        tester = app.test_client(self)
+        response = tester.get('/random')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(get_random_cafe(), dict)
+    
     
 
 if __name__ == '__main__':
