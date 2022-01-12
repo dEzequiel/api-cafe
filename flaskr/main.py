@@ -33,13 +33,13 @@ class Cafe:
         self.coffee_price = coffee_price
 
 
-@app.route("/")  # create a route
-def home():  # what's going to happen when make a GET request to the route
+@app.route("/")  
+def home():  
     return render_template('index.html')
 
 
 @app.route("/random")
-def get_random_cafe():  # Return a random Cafe when make a GUET request to '/random' route
+def get_random_cafe():
     with sqlite3.connect("flaskr/cafes.db") as db_connection:
 
         db_connection.row_factory = sqlite3.Row
@@ -77,25 +77,20 @@ def get_cafe_by_location():
     with sqlite3.connect("flaskr/cafes.db") as db_connection:
 
         db_connection.row_factory = sqlite3.Row
+        db_cursor = db_connection.cursor()
 
         parameter_location = request.args.get(
             "location"
-        )  # Variable aims to the argument passed to URL. search?loc=argument
+        ) 
         formatted_parameter = "'" + parameter_location + "'"
-        sql_instruction = (
-            f"""SELECT * FROM cafe WHERE location={formatted_parameter};""".format(
-                formatted_parameter
-            )
-        )
 
-        db_cursor = db_connection.cursor()
-        db_cursor.execute(sql_instruction)
+        db_cursor.execute(f"SELECT * FROM cafe WHERE location={formatted_parameter}".format(formatted_parameter))
 
         all_cafes = {}
-        position = 0
+        key = 0
         for row in db_cursor.fetchall():
-            all_cafes[position] = dict(row)
-            position += 1
+            all_cafes[key] = dict(row)
+            key += 1
 
         return all_cafes
 
